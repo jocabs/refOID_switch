@@ -6,3 +6,32 @@ HP 2530-24G-PoEP Switch (J9773A) - Procurve
 Interface 24(): Bits received
 net.if.in[ifHCInOctets.24]
 1.3.6.1.2.1.31.1.1.1.6.24
+
+
+# Get today's date in yyyy-MM-dd format
+$today = Get-Date -Format "yyyy-MM-dd"
+
+# Read and wrap XML content
+$xmlContent = Get-Content "C:\Users\VBuendicho\Downloads\IN251104.log" -Raw
+$wrappedXml = "<Events>$xmlContent</Events>"
+[xml]$logXml = $wrappedXml
+
+# Extract data and prepend today's date to the time in Timestamp, with null checks
+$logXml.Events.Event | ForEach-Object {
+    $time = if ($_.Timestamp) { $_.Timestamp.InnerText.Trim() } else { '' }
+    $userName = if ($_.'User-Name') { $_.'User-Name'.InnerText.Trim() } else { '' }
+    $nasIp = if ($_.'NAS-IP-Address') { $_.'NAS-IP-Address'.InnerText.Trim() } else { '' }
+    $result = if ($_.Result) { $_.Result.InnerText.Trim() } else { '' }
+
+    $fullTimestamp = if ($time) { "$today $time" } else { '' }
+
+    [PSCustomObject]@{
+        Timestamp = $fullTimestamp
+        UserName  = $userName
+        NASIP     = $nasIp
+        Result    = $result
+    }
+} | Export-Csv "$env:USERPROFILE\Desktop\NPS_Report.csv" -NoTypeInformation
+
+
+
