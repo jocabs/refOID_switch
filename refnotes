@@ -3,3 +3,6 @@ HP v1910 Mem usage .1.3.6.1.4.1.25506.2.6.1.1.1.1.8.8
 HP v1910 Temp      .1.3.6.1.4.1.25506.2.6.1.1.1.1.12.8
 
 HP 2530-24G-PoEP Switch (J9773A) - Procurve
+Interface 24(): Bits received
+net.if.in[ifHCInOctets.24]
+1.3.6.1.2.1.31.1.1.1.6.24
